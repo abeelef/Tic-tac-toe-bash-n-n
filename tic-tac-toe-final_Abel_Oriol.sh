@@ -108,6 +108,7 @@ for ((i=0; i<$mida; i++)) do
                     return 
                 else
                         echo "Player two wins!"
+		        return
                 fi
 	fi
 	done
@@ -134,6 +135,7 @@ for ((n=0; n<$mida; n++)) do
                     return 
                 else
                         echo "Player two wins!"
+			return
                 fi
 	fi
 	done
