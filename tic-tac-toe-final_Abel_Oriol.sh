@@ -83,25 +83,118 @@ player_pick(){ #NOMÉS S'HA AFEGIT ELS COLORS AL CODI BASE DE LA WEB i he canvia
 #-----------------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------------
 
-check_match() { #IGUAL CODI BASE
-  if  [[ ${moves[$1]} == ${moves[$2]} ]]&& \
-      [[ ${moves[$2]} == ${moves[$3]} ]]; then
-    game_on=false
-  fi
-  if [ $game_on == false ]; then
-    if [ ${moves[$1]} == 'X' ];then
-      echo -e ${RED}"player one wins!" ${NC} 
-      return 
-    else
-      echo -e ${GREEN}"player two wins!"${NC}
-      return 
-    fi
-  fi
+check_winner() { #IGUAL CODI BASE
+#VERTICALS
+x=0
+for ((i=0; i<$mida; i++)) do
+        for ((n=0; n<$mida; n++)) do
+	a=$(($mida*$n))
+	b=$(($n+1))
+	c=$(($mida*$b))
+	#echo "${moves[$(($i+$a))]}"
+	#echo "${moves[$(($i+$c))]}"
+        if [ "${moves[$(($i+$a))]}" == "${moves[$(($i+$c))]}" ]; then
+            x=$(($x+1)) #igual a x++
+	    #echo $x
+	else
+	    x=0
+	fi
+	if [ $x == $(($mida-1)) ]; then
+		game_on=false
+	fi
+        if [ $game_on == false ]; then
+                if [ "${moves[$(($i+$a))]}" == "$player_1" ]; then
+                        echo "Player one wins!"
+                    return 
+                else
+                        echo "Player two wins!"
+                fi
+	fi
+	done
+done
+
+#HORITZONATALS
+x=0
+game_on=true
+for ((n=0; n<$mida; n++)) do	
+	for ((i=0; i<$mida; i++)) do
+	a=$(($mida*$n))	
+	b=$(($a+1))
+        if [ "${moves[$(($i+$a))]}" == "${moves[$(($i+$b))]}" ]; then
+            x=$(($x+1)) #igual a x++
+	else
+	    x=0
+	fi
+	if [ $x == $(($mida-1)) ]; then
+		game_on=false
+	fi
+        if [ $game_on == false ]; then
+                if [ "${moves[$(($i+$a))]}" == "$player_1" ]; then
+                        echo "Player one wins!"
+                    return 
+                else
+                        echo "Player two wins!"
+                fi
+	fi
+	done
+done
+
+#DIAGONAL DESCENDENT	
+x=0
+for ((i=0; i<$mida; i++)) do
+	a=$(($i-1))
+	b=$(($mida*$a))
+	c=$(($mida*$i))
+	p=$(($c+1))
+        if [ "${moves[$(($i+$b+$mida))]}" == "${moves[$(($i+$p+$mida))]}" ]; then
+            x=$(($x+1)) #igual a x++
+	else
+	    x=0
+	fi
+	if [ $x == $(($mida-1)) ]; then
+		game_on=false
+	fi
+        if [ $game_on == false ]; then
+                if [ "${moves[$(($i+$b+$mida))]}" == "$player_1" ];then
+                        echo "Player one wins!"
+                    return 
+                else
+                        echo "Player two wins!"
+		    return
+                fi
+	fi
+done
+
+#DIAGONAL ASCENDENT
+
+for ((i=$mida; i>0; i--)) do
+	a=$(($mida-$i))
+	b=$(($mida*$a))
+	c=$(($a+1))
+	d=$(($mida*$c))
+        if [ "${moves[$(($i+$b-1))]}" == "${moves[$(($i+$d-2))]}" ]; then 
+            x=$(($x+1)) #igual a x++
+	else
+	    x=0
+	fi
+	if [ $x == $(($mida-1)) ]; then
+		game_on=false
+	fi
+        if [ $game_on == false ]; then
+                if [ "${moves[$(($i+$b-1))]}" == "$player_1" ];then
+                        echo "Player one wins!"
+                    return 
+                else
+                        echo "Player two wins!"
+		    return
+                fi
+	fi
+	done
+
 }
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------------
-
 
 
 
@@ -112,6 +205,7 @@ while $game_on
 do
   player_pick
   print_board
+  check_winner
     
 done
 
